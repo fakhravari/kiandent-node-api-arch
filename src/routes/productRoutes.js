@@ -1,6 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const c = require('../controllers/productController');
+const { protect } = require('../middleware/authMiddleware');
 
 /**
  * @swagger
@@ -65,7 +66,7 @@ router.get('/:id', c.get);
  *       200:
  *         description: محصول با موفقیت اضافه شد
  */
-router.post('/', c.create);
+router.post('/', protect, c.create);
 
 /**
  * @swagger

@@ -9,9 +9,11 @@
   },
   "dependencies": {
     "basic-ftp": "^5.0.5",
+    "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
     "cors": "^2.8.5",
     "express": "^4.19.2",
+    "jsonwebtoken": "^9.0.2",
     "mssql": "^12.1.0",
     "multer": "^2.0.2",
     "swagger-jsdoc": "^6.2.8",

@@ -6,6 +6,10 @@ npm audit fix --dry-run
 
 openapi.json > _commented_components برای کامنت کردن این بخش
 
+** Render
+JWT_SECRET=yourSuperSecretKey12345
+JWT_EXPIRES_IN=7d
+
 
 
 https://nodejs-clean-architecture.onrender.com/api-docs
