@@ -1,3 +1,9 @@
+npm install
+
+npm audit fix --force
+npm audit fix --dry-run
+
+
 openapi.json > _commented_components برای کامنت کردن این بخش
 
 
