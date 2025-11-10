@@ -13,6 +13,8 @@ app.use('/products', require('./routes/productRoutes'));
 app.use('/orders', require('./routes/orderRoutes'));
 app.use('/orderdetails', require('./routes/orderDetailRoutes'));
 
+app.use('/ftp', require('./routes/ftpRoutes'));
+
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs));
 
 app.use((err, req, res, next) => {

@@ -1,1 +1,17 @@
 openapi.json > _commented_components برای کامنت کردن این بخش
+
+
+
+
+
+ftp
+user = nodejs
+pass = 4z*v8O9n4
+ip = nodejs.kiandent.ir
+
+
+
+ip=62.204.61.143\sqlserver2022
+db=kiandent_NodeJs
+user=kiandent_NodeJs
+pas=q8E0*0es7
