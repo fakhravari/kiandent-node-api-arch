@@ -148,16 +148,6 @@ SQL Server
 2. یک شاخهٔ جدید بسازید و تغییرات را اعمال کنید.
 3. Pull request را باز کنید و توضیحات لازم را بنویسید.
 
-ارجاع و استناد (How to cite)
---------------------------------
-در صورت استفادهٔ آکادمیک از این مخزن، لطفاً در بخش مراجع خود به آدرس پروژه و مستندات اشاره کنید. مثال استناد ساده:
-
-Fakhravari, M. H. (2025). Node.js Clean Architecture — sample project. GitHub repository. URL: https://github.com/fakhravari/NodeJs_Clean_Architecture
-
-منابع و مطالعات مرتبط (References)
-- Fielding, R. T. (2000). Architectural Styles and the Design of Network-based Software Architectures (REST dissertation).
-- Evans, E. (2003). Domain-Driven Design: Tackling Complexity in the Heart of Software.
-
 مشاهدهٔ مستندات (Online)
 -------------------------
 مستندات OpenAPI/Swagger این پروژه در آدرس زیر قابل مشاهده و بررسی است:
