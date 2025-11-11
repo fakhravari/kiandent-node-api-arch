@@ -1,155 +1,106 @@
 # Node.js Clean Architecture (Express + SQL Server + JWT + Swagger + FTP)
 
-پروژهٔ API با Node.js/Express و SQL Server که با اصول معماری تمیز (لایه‌ای + Utility Singleton) پیاده‌سازی شده.  
-ویژگی‌های مهم: احراز هویت JWT (انقضای پیش‌فرض ۱ دقیقه)، مستندسازی کامل با Swagger، کانفیگ متمرکز با ConfigUtil، و ابزارهای FTP برای مدیریت فایل‌ها.
+این مخزن یک نمونهٔ پروژهٔ API بر پایهٔ Node.js و Express است که از الگوی معماری تمیز (لایه‌ای) پیروی می‌کند. پروژه شامل اتصال به SQL Server، احراز هویت با JWT، مستندسازی با Swagger و امکانات آپلود/دانلود فایل از طریق FTP می‌باشد.
 
+## هدف
+- فراهم کردن یک اسکلت مبتنی بر بهترین شیوه‌ها برای ساخت API در Node.js
+- نشان دادن الگوهای لایه‌بندی (controllers → services → models) و مدیریت خطاها
 
-در آدرس زیر قابل مشاهده است:  
-[https://nodejs-clean-architecture.onrender.com/api-docs](https://nodejs-clean-architecture.onrender.com/api-docs)
+## ویژگی‌ها
+- ساختار لایه‌ای و تمیز
+- مدیریت کانفیگ متمرکز (`ConfigUtil`)
+- احراز هویت JWT
+- مستندسازی خودکار OpenAPI + Swagger UI (`/api-docs`)
+- اعتبارسنجی ورودی با `express-validator`
+- مدیریت خطاها با `AppError` و middleware مرکزی
 
+## شروع سریع
 
-## فهرست
-- معماری و تکنولوژی‌ها
-- ساختار پوشه‌ها
-- نصب و اجرا
-- پیکربندی .env
-- مستندات Swagger
-- احراز هویت (JWT)
-- Endpointها
-- پایگاه داده
-- سرویس FTP
-- استقرار
-- اسکریپت‌ها
-- عیب‌یابی
-- مجوز
+1. کلون کردن مخزن
 
----
-
-## معماری و تکنولوژی‌ها
-
-- **Express.js** به‌عنوان فریم‌ورک HTTP  
-- **SQL Server** با پکیج `mssql`  
-- **JWT** برای Auth (انقضای پیش‌فرض: ۱ دقیقه)  
-- **Swagger UI + swagger-jsdoc** برای مستندسازی  
-- **ConfigUtil (Singleton)** برای تمرکز تنظیمات (JWT/DB/FTP/Timezone)  
-- **basic-ftp** برای عملیات فایل روی سرور FTP  
-
----
-
-## ساختار پوشه‌ها
-
-```
-src/
-  config/
-  controllers/
-  middleware/
-  routes/
-  utils/
-  docs/
-app.js
-db.sql
-package.json
-README.md
+```powershell
+git clone <repo-url>
+cd NodeJs_Clean_Architecture
 ```
 
----
+2. نصب وابستگی‌ها
 
-## نصب و اجرا
-
-```bash
+```powershell
 npm install
-npm run dev
 ```
 
-سپس Swagger در آدرس زیر قابل مشاهده است:  
-[http://localhost:3000/api-docs](http://localhost:3000/api-docs)
+3. پیکربندی محیط
+- یک فایل `.env` در ریشه بسازید یا از `.env.example` استفاده کنید. مقادیر حساس (کلید JWT، رمز DB، رمز FTP) را در این فایل قرار دهید و آن را در Git نگهداری نکنید.
 
----
-
-## پیکربندی .env
+نمونهٔ متغیرهای محیطی (.env):
 
 ```
 PORT=3000
-JWT_SECRET=yourSuperSecretKey12345
+JWT_SECRET=your_jwt_secret
 JWT_EXPIRES_IN=1m
 
-DB_USER=kiandent_NodeJs
-DB_PASS=q8E0*0es7
-DB_SERVER=62.204.61.143\sqlserver2022
-DB_NAME=kiandent_NodeJs
-DB_ENCRYPT=false
-DB_TRUST_CERT=true
-DB_POOL_MAX=10
-DB_POOL_MIN=0
-DB_IDLE_TIMEOUT=30000
+# DATABASE
+DB_USER=your_db_user
+DB_PASS=your_db_password
+DB_SERVER=your_db_server
+DB_NAME=your_db_name
 
-FTP_HOST=nodejs.kiandent.ir
-FTP_USER=nodejs
-FTP_PASS=4z*v8O9n4
-FTP_SECURE=false
+# FTP
+FTP_HOST=your_ftp_host
+FTP_USER=your_ftp_user
+FTP_PASS=your_ftp_password
 ```
 
----
+4. اجرای برنامه (حالت توسعه)
 
-## Swagger
-
-پروژه دارای Swagger کامل با مسیر `/api-docs` است و گزینه‌ی زیر برای بسته بودن تب‌ها تنظیم شده است:
-```js
-swaggerOptions: {
-  docExpansion: 'none'
-}
+```powershell
+npm run dev
 ```
 
----
+5. مستندات API
 
-## احراز هویت (JWT)
+در حالت محلی به آدرس زیر مراجعه کنید:
 
-- مسیر ثبت‌نام: `POST /auth/register`
-- مسیر ورود: `POST /auth/login`
-- انقضای توکن: ۱ دقیقه (قابل تنظیم از `.env`)
-- ذخیره در دیتابیس: `Jwt`, `JwtIssuedAt`, `JwtExpiresAt`
+```
+http://localhost:3000/api-docs
+```
 
----
+## ساختار پوشه‌ها (خلاصه)
 
-## پایگاه داده
+```
+src/
+  config/        # ConfigUtil و اتصال به DB
+  controllers/   # هندلرهای route
+  services/      # منطق تجاری و دسترسی به DB
+  models/        # metadata جدول‌ها
+  routes/        # تعریف routeها و مستندسازی
+  middleware/    # auth, validate, error handler
+  utils/         # AppError, asyncHandler و ...
+  docs/          # تنظیمات swagger
+uploads/         # پوشهٔ موقت برای multer
+```
 
-جداول اصلی:
-- Users
-- Customers
-- Products
-- Orders
-- OrderDetails
+## نکات مهم و امنیتی
+- مقادیر حساس را هرگز در README یا در کنترل نسخه قرار ندهید.
+- از فایل `.env` محلی استفاده کنید و یک `.env.example` با placeholderها داشته باشید.
 
-کانفیگ اتصال در `src/config/db.js` با کمک `ConfigUtil` انجام می‌شود.
+## مدیریت خطا
+- این پروژه یک کلاس `AppError` دارد برای خطاهای عملیاتی و یک error-handling middleware مرکزی که خطاها را به پاسخ‌های مناسب HTTP نگاشت می‌کند.
 
----
+## اعتبارسنجی ورودی
+- از `express-validator` برای بررسی ورودی‌ها استفاده شده و middleware `validate` خطاهای ولیدیشن را به `AppError(400)` تبدیل می‌کند.
 
-## سرویس FTP
+## پیشنهادات برای بهبود
+- جایگزینی `console` با یک لاگر ساختاریافته (`winston` یا `pino`)
+- افزودن تست‌های واحد/ادغام (jest + supertest)
+- افزودن CI (GitHub Actions) برای lint و تست خودکار
 
-در مسیر `src/utils/ftpService.js` تعریف شده و از ConfigUtil تنظیمات را می‌خواند.  
-توابع:
-- `uploadFile(localPath, remoteFileName)`  
-- `downloadFile(remoteFileName, localPath)`  
-- `deleteFile(remoteFileName)`  
-- `listFiles(remoteDir)`
+## مشارکت
+- خوشحال می‌شویم pull request یا issue دریافت کنیم. برای تغییرات بزرگ ابتدا یک issue باز کنید و ایده را توضیح دهید.
 
----
-
-## استقرار
-
-روی Render یا هر هاست Node.js قابل اجرا است.  
-در تنظیم Swagger از `RENDER_EXTERNAL_HOSTNAME` برای ساخت URL داینامیک استفاده می‌شود.
-
----
-
-## عیب‌یابی
-
-- نصب نشدن dotenv → `npm install dotenv`
-- خطای اتصال SQL → بررسی TCP/IP و پورت 1433
-- JWT منقضی ولی پاسخ می‌دهد → بررسی `authMiddleware.protect`
+## لایسنس
+- MIT © Mohammad Hussein Fakhravari
 
 ---
 
-## مجوز
-
-MIT License © Mohammad Hussein Fakhravari
+اگر می‌خواهید، می‌توانم همین حالا فایل `.env.example` بسازم و/یا README را به انگلیسی نیز اضافه کنم — بگویید کدام‌یک را اول انجام دهم.
