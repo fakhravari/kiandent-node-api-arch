@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const auth = require('../controllers/authController');
+const { body } = require('express-validator');
+const validate = require('../middleware/validate');
 
 /**
  * @swagger
@@ -30,7 +32,11 @@ const auth = require('../controllers/authController');
  *       200:
  *         description: کاربر با موفقیت ثبت شد
  */
-router.post('/register', auth.register);
+router.post('/register', [
+    body('FullName').trim().notEmpty().withMessage('FullName is required'),
+    body('Email').isEmail().withMessage('Valid Email is required'),
+    body('Password').isLength({ min: 6 }).withMessage('Password must be at least 6 characters'),
+], validate, auth.register);
 
 /**
  * @swagger
@@ -52,6 +58,9 @@ router.post('/register', auth.register);
  *       200:
  *         description: ورود موفق و دریافت توکن
  */
-router.post('/login', auth.login);
+router.post('/login', [ 
+    body('Email').isEmail().withMessage('Valid Email is required'),
+    body('Password').notEmpty().withMessage('Password is required'),
+], validate, auth.login);
 
 module.exports = router;

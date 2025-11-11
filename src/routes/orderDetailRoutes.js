@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const c = require('../controllers/orderDetailController');
+const { body, param } = require('express-validator');
+const validate = require('../middleware/validate');
 
 /**
  * @swagger
@@ -37,7 +39,7 @@ router.get('/', c.list);
  *       200:
  *         description: جزئیات سفارش مورد نظر
  */
-router.get('/:id', c.get);
+router.get('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.get);
 
 /**
  * @swagger
@@ -65,7 +67,12 @@ router.get('/:id', c.get);
  *       200:
  *         description: جزئیات سفارش اضافه شد
  */
-router.post('/', c.create);
+router.post('/', [
+    body('OrderID').isInt().withMessage('OrderID is required and must be an integer'),
+    body('ProductID').isInt().withMessage('ProductID is required and must be an integer'),
+    body('Quantity').isInt().withMessage('Quantity is required and must be an integer'),
+    body('UnitPrice').isNumeric().withMessage('UnitPrice is required and must be a number'),
+], validate, c.create);
 
 /**
  * @swagger
@@ -92,7 +99,7 @@ router.post('/', c.create);
  *       200:
  *         description: بروزرسانی جزئیات سفارش
  */
-router.put('/:id', c.update);
+router.put('/:id', [param('id').isInt().withMessage('id must be an integer'), body('Quantity').optional().isInt().withMessage('Quantity must be an integer'), body('UnitPrice').optional().isNumeric().withMessage('UnitPrice must be a number')], validate, c.update);
 
 /**
  * @swagger
@@ -110,7 +117,7 @@ router.put('/:id', c.update);
  *       200:
  *         description: جزئیات سفارش حذف شد
  */
-router.delete('/:id', c.remove);
+router.delete('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.remove);
 
 /**
  * @swagger
@@ -143,6 +150,6 @@ router.delete('/:id', c.remove);
  *                       Quantity: { type: integer }
  *                       UnitPrice: { type: number }
  */
-router.get('/order/:orderId', c.withProducts);
+router.get('/order/:orderId', [param('orderId').isInt().withMessage('orderId must be an integer')], validate, c.withProducts);
 
 module.exports = router;

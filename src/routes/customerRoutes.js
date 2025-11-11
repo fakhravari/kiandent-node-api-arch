@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const c = require('../controllers/customerController');
+const { body, param } = require('express-validator');
+const validate = require('../middleware/validate');
 
 /**
  * @swagger
@@ -35,7 +37,7 @@ router.get('/', c.list);
  *     responses:
  *       200: { description: موفق }
  */
-router.get('/:id', c.get);
+router.get('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.get);
 
 /**
  * @swagger
@@ -57,7 +59,12 @@ router.get('/:id', c.get);
  *     responses:
  *       200: { description: موفق }
  */
-router.post('/', c.create);
+router.post('/', [
+    body('FullName').trim().notEmpty().withMessage('FullName is required'),
+    body('Email').optional().isEmail().withMessage('Email must be valid'),
+    body('Phone').optional().isString(),
+    body('City').optional().isString(),
+], validate, c.create);
 
 /**
  * @swagger
@@ -84,7 +91,13 @@ router.post('/', c.create);
  *     responses:
  *       200: { description: موفق }
  */
-router.put('/:id', c.update);
+router.put('/:id', [
+    param('id').isInt().withMessage('id must be an integer'),
+    body('FullName').optional().trim().notEmpty(),
+    body('Email').optional().isEmail().withMessage('Email must be valid'),
+    body('Phone').optional().isString(),
+    body('City').optional().isString(),
+], validate, c.update);
 
 /**
  * @swagger
@@ -100,6 +113,6 @@ router.put('/:id', c.update);
  *     responses:
  *       200: { description: موفق }
  */
-router.delete('/:id', c.remove);
+router.delete('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.remove);
 
 module.exports = router;

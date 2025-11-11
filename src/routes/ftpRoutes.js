@@ -3,6 +3,8 @@ const router = express.Router();
 const ftpCtrl = require('../controllers/ftpController');
 const multer = require('multer');
 const upload = multer({ dest: 'uploads/' });
+const { param } = require('express-validator');
+const validate = require('../middleware/validate');
 
 /**
  * @swagger
@@ -80,7 +82,7 @@ const upload = multer({ dest: 'uploads/' });
 
 router.get('/', ftpCtrl.list);
 router.post('/upload', upload.single('file'), ftpCtrl.upload);
-router.get('/download/:name', ftpCtrl.download);
-router.delete('/:name', ftpCtrl.remove);
+router.get('/download/:name', [param('name').trim().notEmpty().withMessage('name is required')], validate, ftpCtrl.download);
+router.delete('/:name', [param('name').trim().notEmpty().withMessage('name is required')], validate, ftpCtrl.remove);
 
 module.exports = router;

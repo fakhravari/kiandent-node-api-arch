@@ -2,6 +2,8 @@ const express = require('express');
 const router = express.Router();
 const c = require('../controllers/productController');
 const { protect } = require('../middleware/authMiddleware');
+const { body, param } = require('express-validator');
+const validate = require('../middleware/validate');
 
 /**
  * @swagger
@@ -38,7 +40,7 @@ router.get('/', c.list);
  *       200:
  *         description: اطلاعات محصول برگردانده می‌شود
  */
-router.get('/:id', c.get);
+router.get('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.get);
 
 /**
  * @swagger
@@ -66,7 +68,11 @@ router.get('/:id', c.get);
  *       200:
  *         description: محصول با موفقیت اضافه شد
  */
-router.post('/', protect, c.create);
+router.post('/', protect, [
+    body('ProductName').trim().notEmpty().withMessage('ProductName is required'),
+    body('Price').isNumeric().withMessage('Price must be a number'),
+    body('Stock').optional().isInt().withMessage('Stock must be an integer'),
+], validate, c.create);
 
 /**
  * @swagger
@@ -97,7 +103,12 @@ router.post('/', protect, c.create);
  *       200:
  *         description: محصول بروزرسانی شد
  */
-router.put('/:id', c.update);
+router.put('/:id', [
+    param('id').isInt().withMessage('id must be an integer'),
+    body('ProductName').optional().trim().notEmpty(),
+    body('Price').optional().isNumeric().withMessage('Price must be a number'),
+    body('Stock').optional().isInt().withMessage('Stock must be an integer'),
+], validate, c.update);
 
 /**
  * @swagger
@@ -115,6 +126,6 @@ router.put('/:id', c.update);
  *       200:
  *         description: محصول حذف شد
  */
-router.delete('/:id', c.remove);
+router.delete('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.remove);
 
 module.exports = router;

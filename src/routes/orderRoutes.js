@@ -1,6 +1,8 @@
 const express = require('express');
 const router = express.Router();
 const c = require('../controllers/orderController');
+const { body, param } = require('express-validator');
+const validate = require('../middleware/validate');
 
 /**
  * @swagger
@@ -83,7 +85,7 @@ router.get('/', c.list);
  *       200:
  *         description: اطلاعات سفارش برگردانده می‌شود
  */
-router.get('/:id', c.get);
+router.get('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.get);
 
 /**
  * @swagger
@@ -108,7 +110,7 @@ router.get('/:id', c.get);
  *       200:
  *         description: سفارش با موفقیت ایجاد شد
  */
-router.post('/', c.create);
+router.post('/', [body('CustomerID').isInt().withMessage('CustomerID is required and must be an integer'), body('TotalAmount').optional().isNumeric().withMessage('TotalAmount must be a number')], validate, c.create);
 
 /**
  * @swagger
@@ -135,7 +137,7 @@ router.post('/', c.create);
  *       200:
  *         description: سفارش ویرایش شد
  */
-router.put('/:id', c.update);
+router.put('/:id', [param('id').isInt().withMessage('id must be an integer'), body('TotalAmount').optional().isNumeric().withMessage('TotalAmount must be a number')], validate, c.update);
 
 /**
  * @swagger
@@ -153,6 +155,6 @@ router.put('/:id', c.update);
  *       200:
  *         description: سفارش حذف شد
  */
-router.delete('/:id', c.remove);
+router.delete('/:id', [param('id').isInt().withMessage('id must be an integer')], validate, c.remove);
 
 module.exports = router;
