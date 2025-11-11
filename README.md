@@ -43,7 +43,7 @@
 1. کلون کردن مخزن
 
 ```powershell
-git clone <YOUR_REPO_URL>
+git clone <https://github.com/fakhravari/NodeJs_Clean_Architecture.git>
 cd NodeJs_Clean_Architecture
 ```
 
