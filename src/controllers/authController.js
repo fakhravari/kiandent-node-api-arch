@@ -4,6 +4,8 @@ const { getConnection, sql } = require("../config/db");
 const configUtil = require("../config/configUtil");
 const asyncHandler = require("../utils/asyncHandler");
 const AppError = require("../utils/AppError");
+const { formatDateTimeSQL } = require("../utils/viewHelpers");
+
 const {
   generateAccessToken,
   generateRefreshToken,
@@ -54,17 +56,8 @@ exports.register = asyncHandler(async (req, res) => {
     user: { fullName: FullName, email: Email },
     accessToken,
     refreshToken,
-    // include both UTC (ISO) and local formatted times so callers can see timezone
-    issuedAt: {
-      iso: issuedAt.toISOString(),
-      local: issuedAt.toLocaleString(),
-      offset: issuedAt.getTimezoneOffset(), // minutes behind UTC
-    },
-    expiresAt: {
-      iso: expireDate.toISOString(),
-      local: expireDate.toLocaleString(),
-      offset: expireDate.getTimezoneOffset(),
-    },
+    issuedAt: issuedAt.formatDateTimeSQL(),
+    expiresAt: expireDate.formatDateTimeSQL(),
   });
 });
 
@@ -95,7 +88,6 @@ exports.login = asyncHandler(async (req, res) => {
       "کاربر یا رمز عبور اشتباه است"
     );
 
-  // generate new tokens and update DB (rotate refresh token)
   const jwtConfig = configUtil.getJwtConfig();
   const accessToken = generateAccessToken(user.Email, user.FullName);
   const refreshToken = generateRefreshToken();
@@ -123,16 +115,8 @@ exports.login = asyncHandler(async (req, res) => {
     user: { id: user.UserID, email: user.Email, fullName: user.FullName },
     accessToken,
     refreshToken,
-    issuedAt: {
-      iso: issuedAt.toISOString(),
-      local: issuedAt.toLocaleString(),
-      offset: issuedAt.getTimezoneOffset(),
-    },
-    expiresAt: {
-      iso: expireDate.toISOString(),
-      local: expireDate.toLocaleString(),
-      offset: expireDate.getTimezoneOffset(),
-    },
+    issuedAt: issuedAt.formatDateTimeSQL(),
+    expiresAt: expireDate.formatDateTimeSQL(),
   });
 });
 
