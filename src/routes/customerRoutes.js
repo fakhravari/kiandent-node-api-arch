@@ -1,7 +1,7 @@
 const express = require('express');
 const router = express.Router();
 const c = require('../controllers/customerController');
-const { body, param } = require('express-validator');
+const { body, param, query } = require('express-validator');
 const validate = require('../middleware/validate');
 
 /**
@@ -22,6 +22,23 @@ const validate = require('../middleware/validate');
  *         description: موفق
  */
 router.get('/', c.list);
+
+/**
+ * @swagger
+ * /customers/proc:
+ *   get:
+ *     summary: دریافت مشتریان از طریق Stored Procedure dbo.GetAllCustomers
+ *     tags: [Customers]
+ *     parameters:
+ *       - in: query
+ *         name: Id
+ *         required: false
+ *         schema: { type: integer }
+ *     responses:
+ *       200:
+ *         description: موفق
+ */
+router.get('/proc', [query('Id').optional().isInt().withMessage('Id must be an integer')], validate, c.listFromProc);
 
 /**
  * @swagger

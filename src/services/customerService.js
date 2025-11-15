@@ -7,6 +7,16 @@ async function getAll() {
   return result.recordset;
 }
 
+// Standalone stored-proc caller: dbo.GetAllCustomers(@Id INT=0)
+// This function is independent and does not depend on other service methods.
+async function getAllFromProc(id = 0) {
+  const pool = await getConnection();
+  const request = pool.request();
+  request.input('Id', sql.Int, id);
+  const result = await request.execute('dbo.GetAllCustomers');
+  return result.recordset;
+}
+
 async function getById(id) {
   const pool = await getConnection();
   const result = await pool.request()
@@ -46,4 +56,4 @@ async function remove(id) {
     .query(`DELETE FROM ${model.tableName} WHERE CustomerID=@id`);
 }
 
-module.exports = { getAll, getById, create, update, remove };
+module.exports = { getAll, getAllFromProc, getById, create, update, remove };

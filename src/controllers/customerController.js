@@ -7,6 +7,13 @@ exports.list = asyncHandler(async (req, res) => {
   res.json({ success: true, data });
 });
 
+// Call stored-proc version (standalone)
+exports.listFromProc = asyncHandler(async (req, res) => {
+  const id = req.query.Id ? Number(req.query.Id) : 0;
+  const data = await service.getAllFromProc(id);
+  res.json({ success: true, data });
+});
+
 exports.get = asyncHandler(async (req, res) => {
   const item = await service.getById(req.params.id);
   if (!item) throw new AppError(404, 'CUSTOMER_NOT_FOUND', 'مشتری یافت نشد');
