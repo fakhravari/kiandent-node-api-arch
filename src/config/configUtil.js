@@ -61,13 +61,23 @@ class ConfigUtil {
     // -------------------------
 
     getJwtConfig() {
+        // compute times at call-time so issuedAt reflects the current request time
+        // and return times adjusted to the server's local wall-clock time.
+        // This makes the values appear 'local' when formatted or stored as naive DateTime.
+        const now = new Date();
+        const tzOffsetMin = now.getTimezoneOffset(); // minutes (UTC - local)
+        // shift the instant so that toISOString() represents the local wall-clock time
+        const issuedAtLocal = new Date(now.getTime() - tzOffsetMin * 60 * 1000);
+
         const expiresInMinutes = this.JWT_EXPIRES_IN;
-        const expireDate = new Date(this.now.getTime() + expiresInMinutes * 60 * 1000);
+        const expireDateLocal = new Date(issuedAtLocal.getTime() + expiresInMinutes * 60 * 1000);
 
         return {
             secret: this.JWT_SECRET,
             expiresIn: expiresInMinutes,
-            expireDate: expireDate,
+            // Dates here are adjusted so their ISO string shows local wall-clock time
+            issuedAt: issuedAtLocal,
+            expireDate: expireDateLocal,
         };
     }
 
