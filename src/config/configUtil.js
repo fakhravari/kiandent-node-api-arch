@@ -1,72 +1,80 @@
 require('dotenv').config();
 
 class ConfigUtil {
+    static _instance = null;
+
     constructor() {
         if (ConfigUtil._instance) return ConfigUtil._instance;
 
-        // ⚙️ تنظیمات عمومی
-        this.PORT = process.env.PORT || 3000;
+        // --- API Config ---
+        this.PORT = this._num(process.env.PORT, 3000);
 
-        // 🔐 تنظیمات JWT
-        this.JWT_SECRET = process.env.JWT_SECRET || 'yourSuperSecretKey12345';
-        this.JWT_EXPIRES_IN = process.env.JWT_EXPIRES_IN || '1m';
+        // --- JWT Config ---
+        this.JWT_SECRET = process.env.JWT_SECRET;
+        this.JWT_EXPIRES_IN = this._num(process.env.JWT_EXPIRES_IN, 30); // minutes
 
-        // 🗄 تنظیمات پایگاه داده SQL Server
+        // --- Database Config ---
         this.dbConfig = {
             user: process.env.DB_USER,
             password: process.env.DB_PASS,
             server: process.env.DB_SERVER,
             database: process.env.DB_NAME,
             options: {
-                encrypt: process.env.DB_ENCRYPT === 'true',
-                trustServerCertificate: process.env.DB_TRUST_CERT === 'true',
+                encrypt: this._bool(process.env.DB_ENCRYPT),
+                trustServerCertificate: this._bool(process.env.DB_TRUST_CERT),
             },
             pool: {
-                max: parseInt(process.env.DB_POOL_MAX || 10, 10),
-                min: parseInt(process.env.DB_POOL_MIN || 0, 10),
-                idleTimeoutMillis: parseInt(process.env.DB_IDLE_TIMEOUT || 30000, 10),
+                max: this._num(process.env.DB_POOL_MAX, 10),
+                min: this._num(process.env.DB_POOL_MIN, 1),
+                idleTimeoutMillis: this._num(process.env.DB_IDLE_TIMEOUT, 30000),
             },
         };
 
-        // 🌐 تنظیمات FTP
+        // --- FTP Config ---
         this.ftpConfig = {
             host: process.env.FTP_HOST,
             user: process.env.FTP_USER,
             password: process.env.FTP_PASS,
-            secure: process.env.FTP_SECURE === 'true',
+            secure: this._bool(process.env.FTP_SECURE),
         };
 
-        // 🕒 تنظیمات زمان (ساعت ایران)
-        this.timezoneOffset = 3.5 * 60 * 60 * 1000; // +03:30 ایران
+        this.now = new Date();
+
         ConfigUtil._instance = this;
     }
 
-    // 🕓 زمان جاری به ساعت ایران (میلادی)
-    nowTehran() {
-        const now = new Date();
-        return new Date(now.getTime() + this.timezoneOffset);
+    // -------------------------
+    //      Utilities
+    // -------------------------
+
+    _bool(value) {
+        return String(value).toLowerCase() === "true";
     }
 
-    // ⏰ محاسبه زمان انقضای JWT
-    getExpiryDateTehran() {
-        const issued = this.nowTehran();
-        return new Date(issued.getTime() + (parseInt(this.JWT_EXPIRES_IN) * 60 * 1000));
+    _num(value, def = 0) {
+        const n = Number(value);
+        return isNaN(n) ? def : n;
     }
 
-    // 🧩 تنظیمات JWT برای استفاده مستقیم
+    // -------------------------
+    //      Config Methods
+    // -------------------------
+
     getJwtConfig() {
+        const expiresInMinutes = this.JWT_EXPIRES_IN;
+        const expireDate = new Date(this.now.getTime() + expiresInMinutes * 60 * 1000);
+
         return {
             secret: this.JWT_SECRET,
-            expiresIn: this.JWT_EXPIRES_IN,
+            expiresIn: expiresInMinutes,
+            expireDate: expireDate,
         };
     }
 
-    // 🗄 دریافت تنظیمات دیتابیس
     getDbConfig() {
         return this.dbConfig;
     }
 
-    // 🌐 دریافت تنظیمات FTP
     getFtpConfig() {
         return this.ftpConfig;
     }

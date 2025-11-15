@@ -13,7 +13,8 @@ exports.protect = async (req, res, next) => {
         // 🧩 بررسی صحت و انقضای JWT
         let decoded;
         try {
-            decoded = jwt.verify(token, configUtil.JWT_SECRET);
+            const { secret } = configUtil.getJwtConfig();
+            decoded = jwt.verify(token, secret);
         } catch (err) {
             if (err.name === 'TokenExpiredError') {
                 console.log('⏰ JWT داخلی منقضی شده');

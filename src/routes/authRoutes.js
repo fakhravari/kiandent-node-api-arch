@@ -58,9 +58,51 @@ router.post('/register', [
  *       200:
  *         description: ورود موفق و دریافت توکن
  */
-router.post('/login', [ 
+router.post('/login', [
     body('Email').isEmail().withMessage('Valid Email is required'),
     body('Password').notEmpty().withMessage('Password is required'),
 ], validate, auth.login);
+
+/**
+ * @swagger
+ * /auth/refresh:
+ *   post:
+ *     summary: دریافت توکن جدید با استفاده از refresh token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [refreshToken]
+ *             properties:
+ *               refreshToken: { type: string }
+ *     responses:
+ *       200:
+ *         description: توکن جدید صادر شد
+ */
+router.post('/refresh', [body('refreshToken').notEmpty().withMessage('refreshToken is required')], validate, auth.refresh);
+
+/**
+ * @swagger
+ * /auth/logout:
+ *   post:
+ *     summary: خروج و لغو refresh token
+ *     tags: [Auth]
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required: [refreshToken]
+ *             properties:
+ *               refreshToken: { type: string }
+ *     responses:
+ *       200:
+ *         description: کاربر خارج شد
+ */
+router.post('/logout', [body('refreshToken').notEmpty().withMessage('refreshToken is required')], validate, auth.logout);
 
 module.exports = router;
