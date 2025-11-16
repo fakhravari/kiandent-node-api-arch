@@ -87,7 +87,7 @@ exports.login = asyncHandler(async (req, res) => {
       "کاربر یا رمز عبور اشتباه است"
     );
 
-  const varifyExpireDate = verifyAndGetExpireDate(user.Jwt, Email);
+  const varifyExpireDate = verifyAndGetExpireDate(user.Jwt, Email, user.JwtExpiresAt);
   if (varifyExpireDate.valid === false) {
     throw new AppError(401, "INVALID_CREDENTIALS", "توکن مشکل دارد");
   }

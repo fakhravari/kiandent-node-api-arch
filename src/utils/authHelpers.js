@@ -11,10 +11,10 @@ function generateRefreshToken() {
   return uuidv4();
 }
 
-function verifyAndGetExpireDate(token, email) {
+function verifyAndGetExpireDate(tokenDb, email, expireDateDb) {
   try {
     const { secret } = configUtil.getJwtConfig();
-    const decoded = jwt.verify(token, secret);
+    const decoded = jwt.verify(tokenDb, secret);
 
     if (!decoded.exp) {
       return {
@@ -39,7 +39,29 @@ function verifyAndGetExpireDate(token, email) {
       };
     }
 
-    const expireDate = new Date(decoded.exp * 1000);
+    const expireDateToken = new Date(decoded.exp * 1000);
+    const expireDateDB = new Date(expireDateDb);
+    if (isNaN(expireDateDB.getTime())) {
+      return {
+        error: "Database expireDate is not valid",
+        valid: false,
+        decoded: null,
+      };
+    }
+
+    const tokenTime = expireDateToken.getTime();
+    const dbTime = expireDateDB.getTime();
+
+    const diff = Math.abs(tokenTime - dbTime);
+
+    if (diff > 5000) {
+      return {
+        error: "Token expire date does not match database",
+        valid: false,
+        decoded: null,
+      };
+    }
+
     return {
       valid: true,
       decoded: decoded,
