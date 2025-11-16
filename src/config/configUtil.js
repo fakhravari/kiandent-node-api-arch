@@ -7,11 +7,11 @@ class ConfigUtil {
     if (ConfigUtil._instance) return ConfigUtil._instance;
 
     // --- API Config ---
-    this.PORT = this._num(process.env.PORT, 3000);
+    this.PORT = Number(process.env.PORT);
 
     // --- JWT Config ---
     this.JWT_SECRET = process.env.JWT_SECRET;
-    this.JWT_EXPIRES_IN = this._num(process.env.JWT_EXPIRES_IN, 30); // minutes
+    this.JWT_EXPIRES_IN = Number(process.env.JWT_EXPIRES_IN); // minutes
 
     // --- Database Config ---
     this.dbConfig = {
@@ -20,13 +20,13 @@ class ConfigUtil {
       server: process.env.DB_SERVER,
       database: process.env.DB_NAME,
       options: {
-        encrypt: this._bool(process.env.DB_ENCRYPT),
-        trustServerCertificate: this._bool(process.env.DB_TRUST_CERT),
+        encrypt: this._toBool(process.env.DB_ENCRYPT),
+        trustServerCertificate: this._toBool(process.env.DB_TRUST_CERT),
       },
       pool: {
-        max: this._num(process.env.DB_POOL_MAX, 10),
-        min: this._num(process.env.DB_POOL_MIN, 1),
-        idleTimeoutMillis: this._num(process.env.DB_IDLE_TIMEOUT, 30000),
+        max: Number(process.env.DB_POOL_MAX),
+        min: Number(process.env.DB_POOL_MIN),
+        idleTimeoutMillis: Number(process.env.DB_IDLE_TIMEOUT),
       },
     };
 
@@ -35,46 +35,36 @@ class ConfigUtil {
       host: process.env.FTP_HOST,
       user: process.env.FTP_USER,
       password: process.env.FTP_PASS,
-      secure: this._bool(process.env.FTP_SECURE),
+      secure: this._toBool(process.env.FTP_SECURE),
     };
-
-    this.now = new Date();
 
     ConfigUtil._instance = this;
   }
 
   // -------------------------
-  //      Utilities
+  //          Utils
   // -------------------------
 
-  _bool(value) {
+  _toBool(value) {
     return String(value).toLowerCase() === "true";
   }
 
-  _num(value, def = 0) {
-    const n = Number(value);
-    return isNaN(n) ? def : n;
-  }
-
   // -------------------------
-  //      Config Methods
+  //      Config Getters
   // -------------------------
 
   getJwtConfig() {
-    const now = new Date();
-    const tzOffsetMin = now.getTimezoneOffset();
-    const issuedAtLocal = new Date(now.getTime() - tzOffsetMin * 60 * 1000);
+    const issuedAt = new Date();
 
-    const expiresInMinutes = this.JWT_EXPIRES_IN;
-    const expireDateLocal = new Date(
-      issuedAtLocal.getTime() + expiresInMinutes * 60 * 1000
+    const expireDate = new Date(
+      issuedAt.getTime() + this.JWT_EXPIRES_IN * 60 * 1000
     );
 
     return {
       secret: this.JWT_SECRET,
-      expiresIn: expiresInMinutes,
-      issuedAt: issuedAtLocal,
-      expireDate: expireDateLocal,
+      expiresIn: this.JWT_EXPIRES_IN,
+      issuedAt,
+      expireDate,
     };
   }
 
@@ -86,9 +76,12 @@ class ConfigUtil {
     return this.ftpConfig;
   }
 
+  // -------------------------
+  //        Singleton
+  // -------------------------
+
   static getInstance() {
-    if (!ConfigUtil._instance) new ConfigUtil();
-    return ConfigUtil._instance;
+    return this._instance || new ConfigUtil();
   }
 }
 

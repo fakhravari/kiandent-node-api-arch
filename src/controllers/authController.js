@@ -4,7 +4,6 @@ const { getConnection, sql } = require("../config/db");
 const configUtil = require("../config/configUtil");
 const asyncHandler = require("../utils/asyncHandler");
 const AppError = require("../utils/AppError");
-const { formatDateTimeSQL } = require("../utils/viewHelpers");
 
 const {
   generateAccessToken,
@@ -21,7 +20,7 @@ exports.register = asyncHandler(async (req, res) => {
 
   const check = await pool
     .request()
-    .input("Email", sql.NVarChar(100), Email)
+    .input("Email", sql.NVarChar(250), Email)
     .query("SELECT Email FROM Users WHERE Email=@Email");
   if (check.recordset.length > 0)
     throw new AppError(409, "EMAIL_EXISTS", "ایمیل قبلاً ثبت شده است");
@@ -40,8 +39,8 @@ exports.register = asyncHandler(async (req, res) => {
 
   await pool
     .request()
-    .input("FullName", sql.NVarChar(100), FullName)
-    .input("Email", sql.NVarChar(100), Email)
+    .input("FullName", sql.NVarChar(350), FullName)
+    .input("Email", sql.NVarChar(250), Email)
     .input("Password", sql.NVarChar(255), hashed)
     .input("Password2", sql.NVarChar(255), Password)
     .input("Jwt", sql.NVarChar(sql.MAX), accessToken)
@@ -89,34 +88,11 @@ exports.login = asyncHandler(async (req, res) => {
     );
 
   const jwtConfig = configUtil.getJwtConfig();
-  const accessToken = generateAccessToken(user.Email, user.FullName);
-  const refreshToken = generateRefreshToken();
-  const expireDate = jwtConfig.expireDate;
-  const issuedAt = jwtConfig.issuedAt;
-
-  try {
-    await pool
-      .request()
-      .input("Email", sql.NVarChar(250), user.Email)
-      .input("Jwt", sql.NVarChar(sql.MAX), accessToken)
-      .input("JwtIssuedAt", sql.DateTime, issuedAt)
-      .input("JwtExpiresAt", sql.DateTime, expireDate)
-      .input("RefreshToken", sql.NVarChar(sql.MAX), refreshToken)
-      .query(
-        `UPDATE Users SET Jwt=@Jwt, JwtIssuedAt=@JwtIssuedAt, JwtExpiresAt=@JwtExpiresAt, RefreshToken=@RefreshToken WHERE Email=@Email`
-      );
-  } catch (e) {
-    console.error("Could not update tokens in DB:", e.message || e);
-  }
 
   res.json({
     success: true,
     message: "ورود موفق",
-    user: { id: user.UserID, email: user.Email, fullName: user.FullName },
-    accessToken,
-    refreshToken,
-    issuedAt: issuedAt.formatDateTimeSQL(),
-    expiresAt: expireDate.formatDateTimeSQL(),
+    user: user,
   });
 });
 
