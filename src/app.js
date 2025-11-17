@@ -40,7 +40,8 @@ app.use((err, req, res, next) => {
       code: err.code,
       message: err.message,
       errorId,
-      message2: err
+      message2: err,
+      req
     };
 
     return res.status(err.statusCode).json({ success: false, error: errorBody });
@@ -53,7 +54,8 @@ app.use((err, req, res, next) => {
       code: 'INTERNAL_SERVER_ERROR',
       message: isProd ? 'Internal Server Error' : err.message,
       errorId,
-      message2: err
+      message2: err,
+      req
     },
   });
 });
