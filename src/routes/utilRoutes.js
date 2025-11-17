@@ -1,41 +1,35 @@
 const router = require("express").Router();
 const utilsController = require("../controllers/utilsController");
 
-
 /**
  * @swagger
  * tags:
- *   name: utils
- *   description:  مدیریت زمان - رشته
+ *   - name: Utils
+ *     description: ابزارهای کمکی مدیریت زمان، رشته، تبدیل تاریخ و اعتبارسنجی
  */
-
 
 /**
  * @swagger
- * /utils/dateformat:
+ * /utils/full-format:
  *   get:
- *     summary: 📅 تبدیل تاریخ میلادی به شمسی + مثال‌های مختلف
+ *     summary: 🧰 ابزارهای کمکی – تبدیل تاریخ، رشته، و اعتبارسنجی
  *     description: |
- *       این متد چند نمونه تبدیل تاریخ (میلادی → شمسی، شمسی → میلادی، اختلاف زمان‌ها و …)  
- *       را برمی‌گرداند و برای تست کلاس DateTimeUtils استفاده می‌شود.
- *     tags: [utils]
+ *       این متد مجموعه‌ای از مثال‌های مربوط به تبدیل تاریخ شمسی/میلادی،  
+ *       نرمال‌سازی متن فارسی، تبدیل اعداد، ساخت اسلاگ، و اعتبارسنجی اطلاعات ایرانی را ارائه می‌دهد.
+ *     tags: [Utils]
  *     responses:
  *       200:
  *         description: موفق
- */ 
-router.route("/dateformat").get(utilsController.dateformat);
-
-
-/**
- * @swagger
- * /utils/stringformat:
- *   get:
- *     summary: 🌀 تبدیل و نرمال‌سازی متن فارسی/عربی
- *     tags: [utils]
- *     responses:
- *       200:
- *         description: 🚀 موفق
+ *         content:
+ *           application/json:
+ *             example:
+ *               success: true
+ *               examples:
+ *                 convert_persian_digits:
+ *                   before: "۱۲۳۴۵۶"
+ *                   after: "123456"
  */
-router.route("/stringformat").get(utilsController.stringFormat);
+
+router.get("/full-format", utilsController.fullFormat);
 
 module.exports = router;
