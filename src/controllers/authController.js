@@ -45,19 +45,26 @@ exports.register = asyncHandler(async (req, res) => {
     .input("Password", sql.NVarChar(255), hashedPassword)
     .input("Password2", sql.NVarChar(255), Password)
     .input("Jwt", sql.NVarChar(sql.MAX), accessToken)
+    .input("RefreshToken", sql.NVarChar(sql.MAX), refreshToken)
     .input("JwtIssuedAt", sql.NVarChar(50), tokenIssuedAt)
     .input("JwtExpiresAt", sql.NVarChar(50), tokenExpiresAt)
-    .input("RefreshToken", sql.NVarChar(sql.MAX), refreshToken)
     .query(insertQuery);
+
+
+
+  const resultUser = await pool
+    .request()
+    .input("Email", sql.NVarChar(250), Email)
+    .query(
+      "SELECT *, CONVERT(NVARCHAR(50), JwtExpiresAt, 121) AS JwtExpiresAt, CONVERT(NVARCHAR(50), JwtIssuedAt, 121) AS JwtIssuedAt FROM Users WHERE Email=@Email"
+    );
+
+  const user = resultUser.recordset[0];
 
   res.status(201).json({
     success: true,
     message: "ثبت‌نام موفق",
-    user: { fullName: FullName, email: Email },
-    accessToken,
-    refreshToken,
-    issuedAt: tokenIssuedAt,
-    expiresAt: tokenExpiresAt,
+    user: user
   });
 });
 
