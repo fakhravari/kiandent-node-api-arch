@@ -38,6 +38,7 @@ app.use((err, req, res, next) => {
       statusCode: err.statusCode,
       code: err.code,
       message: err.message,
+      message2: err
     };
     if (err.details) errorBody.details = err.details;
 
