@@ -3,7 +3,7 @@ const bodyParser = require('body-parser');
 const cors = require('cors');
 const swaggerUi = require('swagger-ui-express');
 const swaggerDocs = require('./docs/swagger');
-const { v4: uuidv4 } = require('uuid');
+const { v4: uuidv4, stringify } = require('uuid');
 const AppError = require('./utils/AppError');
 const { closeConnection } = require('./config/db');
 
@@ -34,14 +34,23 @@ app.use((err, req, res, next) => {
   const errorId = uuidv4();
   console.error(`ErrorId=${errorId}`, { message: err.message, stack: err.stack, code: err.code, details: err.details });
 
+  const bodyData = req.body || {};
+  const queryData = req.query || {};
+  const routeParams = req.params || {};
+
+
   if (err instanceof AppError) {
     const errorBody = {
       statusCode: err.statusCode,
       code: err.code,
       message: err.message,
       errorId,
-      message2: err,
-      req
+      stack: err.stack,
+      method: req.method,
+      url: req.originalUrl,
+      body: bodyData,
+      query: queryData,
+      params: routeParams
     };
 
     return res.status(err.statusCode).json({ success: false, error: errorBody });
@@ -54,8 +63,12 @@ app.use((err, req, res, next) => {
       code: 'INTERNAL_SERVER_ERROR',
       message: isProd ? 'Internal Server Error' : err.message,
       errorId,
-      message2: err,
-      req
+      stack: err.stack,
+      method: req.method,
+      url: req.originalUrl,
+      body: bodyData,
+      query: queryData,
+      params: routeParams
     },
   });
 });
