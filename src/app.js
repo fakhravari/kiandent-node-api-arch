@@ -18,6 +18,7 @@ app.use('/orderdetails', require('./routes/orderDetailRoutes'));
 
 app.use('/ftp', require('./routes/ftpRoutes'));
 app.use('/auth', require('./routes/authRoutes'));
+app.use('/utils', require('./routes/utilRoutes'));
 
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, {
   explorer: false,

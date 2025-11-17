@@ -11,16 +11,17 @@
     "basic-ftp": "^5.0.5",
     "bcryptjs": "^3.0.3",
     "body-parser": "^1.20.2",
-  "cors": "^2.8.5",
-  "uuid": "^9.0.0",
-  "express-validator": "^7.0.1",
+    "cors": "^2.8.5",
     "dotenv": "^17.2.3",
     "express": "^4.19.2",
+    "express-validator": "^7.0.1",
+    "jalaali-js": "^1.2.8",
     "jsonwebtoken": "^9.0.2",
     "mssql": "^12.1.0",
     "multer": "^2.0.2",
     "swagger-jsdoc": "^6.2.8",
-    "swagger-ui-express": "^5.0.1"
+    "swagger-ui-express": "^5.0.1",
+    "uuid": "^9.0.0"
   },
   "devDependencies": {
     "nodemon": "^3.0.1"
