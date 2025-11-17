@@ -32,7 +32,7 @@ app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocs, {
 app.use((err, req, res, next) => {
   const isProd = process.env.NODE_ENV === 'production';
   const errorId = uuidv4();
-  console.error(`ErrorId=${errorId}`, { message: err.message, stack: err.stack, code: err.code, details: err.details });
+  //console.error(`ErrorId=${errorId}`, { message: err.message, stack: err.stack, code: err.code, details: err.details });
 
   const bodyData = req.body || {};
   const queryData = req.query || {};
