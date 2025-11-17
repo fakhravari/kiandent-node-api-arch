@@ -38,9 +38,9 @@ app.use((err, req, res, next) => {
       statusCode: err.statusCode,
       code: err.code,
       message: err.message,
+      errorId,
       message2: err
     };
-    if (err.details) errorBody.details = err.details;
 
     return res.status(err.statusCode).json({ success: false, error: errorBody });
   }
