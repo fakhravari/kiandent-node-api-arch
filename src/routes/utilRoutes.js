@@ -36,6 +36,6 @@ router.route("/dateformat").get(utilsController.dateformat);
  *       200:
  *         description: 🚀 موفق
  */
-router.route("/stringformat").get(utilsController.stringformat);
+router.route("/stringformat").get(utilsController.stringFormat);
 
 module.exports = router;
