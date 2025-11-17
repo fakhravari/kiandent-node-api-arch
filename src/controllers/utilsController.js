@@ -1,4 +1,5 @@
 const DateTimeUtils = require("../utils/DateTimeUtils");
+const StringUtils = require("../utils/StringUtils");
 const asyncHandler = require('../utils/asyncHandler');
 
 
@@ -37,6 +38,33 @@ exports.dateformat = asyncHandler(async (req, res) => {
             diff_in_seconds: diffSec,
             add_45_minutes: added,
             next_week: nextWeek
+        }
+    });
+});
+
+
+exports.stringFormat = asyncHandler(async (req, res) => {
+
+    res.json({
+        success: true,
+        examples: {
+            persian_digits_to_english: 
+                StringUtils.convertToEnglishDigits("۱۲۳۴۵۶"),
+
+            arabic_digits_to_english: 
+                StringUtils.convertToEnglishDigits("٤٥٦٧٨"),
+
+            english_digits_to_persian: 
+                StringUtils.convertToPersianDigits("123456"),
+
+            fix_arabic_characters: 
+                StringUtils.normalizeArabicCharacters("علي رضا و كتاب"),
+
+            normalize_full_text: 
+                StringUtils.normalizeText("۱۲۳ علي ٤٥٦ كتاب"),
+
+            convert_numbers_only: 
+                StringUtils.convertNumberOnly("98765"),
         }
     });
 });

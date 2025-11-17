@@ -6,7 +6,7 @@ const utilsController = require("../controllers/utilsController");
  * @swagger
  * tags:
  *   name: utils
- *   description:  مدیریت زمان
+ *   description:  مدیریت زمان - رشته
  */
 
 
@@ -22,10 +22,20 @@ const utilsController = require("../controllers/utilsController");
  *     responses:
  *       200:
  *         description: موفق
+ */ 
+router.route("/dateformat").get(utilsController.dateformat);
+
+
+/**
+ * @swagger
+ * /utils/stringformat:
+ *   get:
+ *     summary: 🌀 تبدیل و نرمال‌سازی متن فارسی/عربی
+ *     tags: [utils]
+ *     responses:
+ *       200:
+ *         description: 🚀 موفق
  */
- 
-router
-  .route("/dateformat")
-  .get(utilsController.dateformat);
+router.route("/stringformat").get(utilsController.stringformat);
 
 module.exports = router;
