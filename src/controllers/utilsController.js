@@ -45,26 +45,46 @@ exports.dateformat = asyncHandler(async (req, res) => {
 
 exports.stringFormat = asyncHandler(async (req, res) => {
 
+    const ex1_before = "۱۲۳۴۵۶";
+    const ex2_before = "٤٥٦٧٨";
+    const ex3_before = "123456";
+    const ex4_before = "علي رضا و كتاب";
+    const ex5_before = "۱۲۳ علي ٤٥٦ كتاب";
+    const ex6_before = "98765";
+
     res.json({
         success: true,
         examples: {
-            persian_digits_to_english: 
-                StringUtils.convertToEnglishDigits("۱۲۳۴۵۶"),
 
-            arabic_digits_to_english: 
-                StringUtils.convertToEnglishDigits("٤٥٦٧٨"),
+            persian_digits_to_english: {
+                before: ex1_before,
+                after: StringUtils.convertToEnglishDigits(ex1_before)
+            },
 
-            english_digits_to_persian: 
-                StringUtils.convertToPersianDigits("123456"),
+            arabic_digits_to_english: {
+                before: ex2_before,
+                after: StringUtils.convertToEnglishDigits(ex2_before)
+            },
 
-            fix_arabic_characters: 
-                StringUtils.normalizeArabicCharacters("علي رضا و كتاب"),
+            english_digits_to_persian: {
+                before: ex3_before,
+                after: StringUtils.convertToPersianDigits(ex3_before)
+            },
 
-            normalize_full_text: 
-                StringUtils.normalizeText("۱۲۳ علي ٤٥٦ كتاب"),
+            fix_arabic_characters: {
+                before: ex4_before,
+                after: StringUtils.normalizeArabicCharacters(ex4_before)
+            },
 
-            convert_numbers_only: 
-                StringUtils.convertNumberOnly("98765"),
+            normalize_full_text: {
+                before: ex5_before,
+                after: StringUtils.normalizeText(ex5_before)
+            },
+
+            convert_numbers_only: {
+                before: ex6_before,
+                after: StringUtils.convertNumberOnly(ex6_before)
+            }
         }
     });
 });
